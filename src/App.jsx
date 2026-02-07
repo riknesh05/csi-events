@@ -254,9 +254,9 @@ function App() {
           </div>
           <div className="contact-grid">
             {[
-              { name: "Mrs. Vanitha", role: "Staff Incharge", dept: "AP/CSE", phone: "9952531421", img: "vanitha.jpg" },
-              { name: "Mr. Riknesh", role: "Student Representative", dept: "3rd Year/CSE", phone: "9488936779", img: "riknesh.jpg" },
-              { name: "Mr. Pushparaj", role: "Student Representative", dept: "3rd Year/CSE", phone: "7695965434", img: "pushparaj.jpg" }
+              { name: "Mrs. Vanitha R", role: "Staff Incharge", dept: "AP/CSE", phone: "9952531421", img: "vanitha.jpeg" },
+              { name: "Mr. Riknesh A", role: "Student Representative", dept: "3rd Year/CSE", phone: "9488936779", img: "riknesh.jpg" },
+              { name: "Mr. Pushparaj S", role: "Student Representative", dept: "3rd Year/CSE", phone: "7695965434", img: "pushparaj.jpg" }
             ].map((person, idx) => (
               <div className="contact-card scroll-animate" key={idx}>
                 <div className="contact-image">
