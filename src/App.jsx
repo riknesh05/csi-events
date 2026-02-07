@@ -95,6 +95,7 @@ function App() {
               <li><a href="#home" onClick={() => setMenuOpen(false)}>Home</a></li>
               <li><a href="#about" onClick={() => setMenuOpen(false)}>About</a></li>
               <li><a href="#eligibility" onClick={() => setMenuOpen(false)}>Eligibility</a></li>
+              <li><a href="#domains" onClick={() => setMenuOpen(false)}>Domains</a></li>
               <li><a href="#rules" onClick={() => setMenuOpen(false)}>Rules</a></li>
               <li><a href="#contact" onClick={() => setMenuOpen(false)}>Contact</a></li>
             </ul>
@@ -190,6 +191,32 @@ function App() {
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Domains Section */}
+      <section className="domains" id="domains">
+        <div className="container">
+          <div className="section-header">
+            <h2 className="section-title">Hackathon Domains</h2>
+            <p className="section-subtitle">Choose your area of innovation</p>
+          </div>
+          <div className="domains-grid">
+            {[
+              { icon: "🌐", title: "Web Development", text: "Build responsive and dynamic web applications using modern frameworks and technologies." },
+              { icon: "📱", title: "Mobile App Development", text: "Create innovative mobile solutions for Android and iOS platforms." },
+              { icon: "🤖", title: "AI / Machine Learning", text: "Develop intelligent systems using artificial intelligence and machine learning algorithms." },
+              { icon: "🔌", title: "IoT / Embedded Systems", text: "Design smart devices and embedded solutions for real-world applications." },
+              { icon: "🔒", title: "Cybersecurity", text: "Build secure systems and develop solutions to protect against cyber threats." },
+              { icon: "💡", title: "Open Innovation", text: "Think outside the box and create solutions in any domain of your choice." }
+            ].map((domain, idx) => (
+              <div className="domain-card scroll-animate" key={idx}>
+                <div className="domain-icon">{domain.icon}</div>
+                <h3>{domain.title}</h3>
+                <p>{domain.text}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
