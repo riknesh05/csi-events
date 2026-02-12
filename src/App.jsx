@@ -23,7 +23,7 @@ function App() {
   // Countdown logic
   useEffect(() => {
     const timer = setInterval(() => {
-      const eventDate = new Date('2026-02-12T00:00:00').getTime();
+      const eventDate = new Date('2026-02-16T00:00:00').getTime();
       const now = new Date().getTime();
       const distance = eventDate - now;
 
@@ -122,7 +122,7 @@ function App() {
             </h1>
             <p className="hero-subtitle">{subtitle}</p>
             <div className="hero-details">
-              <div className="detail-item"><span className="icon">📅</span><span className="text">12th Feb 2026</span></div>
+              <div className="detail-item"><span className="icon">📅</span><span className="text">16th Feb 2026</span></div>
               <div className="detail-item"><span className="icon">⏱️</span><span className="text">10AM to 4PM (2hrs to Build)</span></div>
               <div className="detail-item"><span className="icon">👥</span><span className="text">2-3 Members</span></div>
             </div>
