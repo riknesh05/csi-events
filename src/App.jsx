@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import confetti from 'canvas-confetti';
 
 function App() {
   const [scrolled, setScrolled] = useState(false);
@@ -6,6 +7,10 @@ function App() {
   const [countdown, setCountdown] = useState({ days: '00', hours: '00', minutes: '00', seconds: '00' });
   const [subtitle, setSubtitle] = useState('');
   const [formStatus, setFormStatus] = useState({ loading: false, message: '', type: '' });
+  const [showJuryPopup, setShowJuryPopup] = useState(false);
+  const [popupCentered, setPopupCentered] = useState(true);
+  const [hasBeenClicked, setHasBeenClicked] = useState(false);
+  const [showJuryPage, setShowJuryPage] = useState(false);
 
   const fullSubtitle = "Build. Code. Present. Win."; // Sparkathon Motto
   const registrationLink = "https://docs.google.com/forms/d/e/1FAIpQLSdCP3jvVTYBAOdhY7uLmjrtUGXQomfQSu4ckT2szO33jJCAFQ/viewform?usp=dialog";
@@ -76,6 +81,117 @@ function App() {
 
     return () => observer.disconnect();
   }, []);
+
+  // Jury popup timer - show after 5 seconds, then move to side after 3 more seconds
+  useEffect(() => {
+    const showTimer = setTimeout(() => {
+      setShowJuryPopup(true);
+
+      // Only center the popup if it hasn't been clicked before
+      if (!hasBeenClicked) {
+        setPopupCentered(true);
+
+        // Trigger confetti when popup appears in center for the first time
+        triggerConfetti();
+
+        // Move to side after 3 seconds of being centered
+        const moveTimer = setTimeout(() => {
+          setPopupCentered(false);
+        }, 3000);
+
+        return () => clearTimeout(moveTimer);
+      } else {
+        // If already clicked before, show directly in side position
+        setPopupCentered(false);
+      }
+    }, 2000);
+    return () => clearTimeout(showTimer);
+  }, [hasBeenClicked]);
+
+  // Confetti trigger - regular burst
+  const triggerConfetti = () => {
+    const duration = 3000;
+    const animationEnd = Date.now() + duration;
+    const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 10000 };
+
+    const randomInRange = (min, max) => Math.random() * (max - min) + min;
+
+    const interval = setInterval(() => {
+      const timeLeft = animationEnd - Date.now();
+
+      if (timeLeft <= 0) {
+        return clearInterval(interval);
+      }
+
+      const particleCount = 50 * (timeLeft / duration);
+
+      confetti({
+        ...defaults,
+        particleCount,
+        origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 }
+      });
+      confetti({
+        ...defaults,
+        particleCount,
+        origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 }
+      });
+    }, 250);
+  };
+
+  // Confetti trigger for jury page - more dramatic and longer
+  const triggerJuryConfetti = () => {
+    const duration = 5000; // 5 seconds
+    const animationEnd = Date.now() + duration;
+    const defaults = { startVelocity: 35, spread: 360, ticks: 80, zIndex: 10003 };
+
+    const randomInRange = (min, max) => Math.random() * (max - min) + min;
+
+    const interval = setInterval(() => {
+      const timeLeft = animationEnd - Date.now();
+
+      if (timeLeft <= 0) {
+        return clearInterval(interval);
+      }
+
+      const particleCount = 70 * (timeLeft / duration); // More particles
+
+      // Burst from left
+      confetti({
+        ...defaults,
+        particleCount,
+        origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 }
+      });
+      // Burst from right
+      confetti({
+        ...defaults,
+        particleCount,
+        origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 }
+      });
+      // Center burst for extra effect
+      confetti({
+        ...defaults,
+        particleCount: particleCount / 2,
+        origin: { x: 0.5, y: 0.3 }
+      });
+    }, 200); // Faster intervals
+  };
+
+  const handleJuryClick = () => {
+    setShowJuryPage(true);
+    setShowJuryPopup(false);
+    setHasBeenClicked(true); // Mark as clicked
+
+    // Trigger dramatic confetti for jury page
+    setTimeout(() => {
+      triggerJuryConfetti();
+    }, 200);
+  };
+
+  const handleCloseJuryPage = () => {
+    setShowJuryPage(false);
+    // Show popup again in side position (not centered since hasBeenClicked is true)
+    setShowJuryPopup(true);
+  };
 
   const handleRegister = () => {
     window.open(registrationLink, '_blank');
@@ -294,6 +410,53 @@ function App() {
           </div>
         </div>
       </footer>
+
+      {/* Jury Popup - appears after 5 seconds */}
+      {showJuryPopup && !showJuryPage && (
+        <div className={`jury-popup ${popupCentered ? 'centered' : ''}`} onClick={handleJuryClick}>
+          <div className="jury-popup-content">
+            <div className="jury-popup-icon">⚖️</div>
+            <div className="jury-popup-text">
+              <strong>Meet Our Jury</strong>
+              <p>Click to view judge</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Jury Page Modal */}
+      {showJuryPage && (
+        <div className="jury-page-overlay" onClick={handleCloseJuryPage}>
+          <div className="jury-page-content" onClick={(e) => e.stopPropagation()}>
+            <button className="jury-close-btn" onClick={handleCloseJuryPage}>✕</button>
+            <div className="jury-header">
+              <h2 className="jury-title">Our Esteemed Jury</h2>
+              <p className="jury-subtitle">Meet the expert who will evaluate the projects</p>
+            </div>
+            <div className="jury-grid">
+              {[
+                { name: "Mrs. Margaret M", role: "Jury", dept: "Prof & Head / ECE", img: "jury.jpg" },
+                { name: "Mrs. Shanthi M", role: "Jury", dept: "ASP & Head / Cyber Security", img: "jury1.jpg" }
+              ].map((jury, idx) => (
+                <div className="jury-card" key={idx}>
+                  <div className="jury-image">
+                    <img
+                      src={`/images/${jury.img}`}
+                      alt={jury.name}
+                      onError={(e) => e.target.src = 'https://ui-avatars.com/api/?name=' + jury.name}
+                    />
+                  </div>
+                  <div className="jury-info">
+                    <h3>{jury.name}</h3>
+                    <p className="jury-role">{jury.role}</p>
+                    <p className="jury-dept">{jury.dept}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
